@@ -1,6 +1,5 @@
 package com.example.demoAppv2.service;
 
-import com.example.demoAppv2.controller.PatientContoller;
 import com.example.demoAppv2.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
