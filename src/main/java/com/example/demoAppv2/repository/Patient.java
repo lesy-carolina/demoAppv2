@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import org.springframework.stereotype.Component;
 
 @Entity
 public class Patient {
@@ -66,4 +67,7 @@ public class Patient {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
+
+
 }
