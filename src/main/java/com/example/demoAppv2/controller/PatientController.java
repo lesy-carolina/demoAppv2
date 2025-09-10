@@ -1,5 +1,6 @@
 package com.example.demoAppv2.controller;
 import com.example.demoAppv2.dto.PatientDTO;
+import com.example.demoAppv2.exception.BadRequestException;
 import com.example.demoAppv2.repository.Patient;
 import com.github.javafaker.Faker;
 import org.aspectj.weaver.patterns.IToken;
@@ -9,6 +10,7 @@ import com.example.demoAppv2.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Random;
 
 import org.slf4j.Logger;
@@ -140,6 +142,19 @@ public class PatientController {
     public List<Patient> getFilterByFullName(@RequestParam("name") String name) {
         log.info("El valor del Filter es { }", name);
         return this.patientService.getPatientFilterByFullName(name);
+    }
+    //
+    @GetMapping("/testv1/{id}" )
+    public ResponseEntity<String> getTestv1(@PathVariable Long id) {
+        if (id == null || id == 0) {
+           throw new BadRequestException("El id no puede ser vacio");
+        }
+        String result= this.patientService.getOnePatientOnly(id);
+
+        return  ResponseEntity.ok().body(result);
+
+
+
     }
 
 

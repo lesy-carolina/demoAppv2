@@ -9,6 +9,8 @@ import com.example.demoAppv2.repository.Patient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,6 +126,12 @@ public class PatientService {
         List<Patient> lstPatients = this.patientRepository.buscarPorNombre(nombre);
         log.info("Total en lista {}", lstPatients.stream().count());
         return lstPatients;
+    }
+
+    public String getOnePatientOnly (Long id) {
+        Optional<Patient> p = this.patientRepository.findById(id);
+        String nombre = p.get().getFullName();
+        return nombre;
     }
 
 
