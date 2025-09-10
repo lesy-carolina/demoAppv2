@@ -1,6 +1,8 @@
 package com.example.demoAppv2.service;
 
+import com.example.demoAppv2.dto.PatientDTO;
 import com.example.demoAppv2.repository.PatientRepository;
+import com.example.demoAppv2.util.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.demoAppv2.repository.Patient;
@@ -20,6 +22,9 @@ public class PatientService {
     @Autowired
 
     private PatientRepository patientRepository;
+
+    @Autowired
+    private PatientMapper mapper;
 
     public List<Patient> getAllPatients() {
         log.info("aqui estamos en el service !!");
@@ -88,35 +93,40 @@ public class PatientService {
         return this.patientRepository.save(p);
 
     }
+
+    public PatientDTO saveOnePatienv3(PatientDTO p) {
+        log.info("aqui se guarda un paciente saveOnePatienv3!!");
+        Patient patient= this.patientRepository.save(this.mapper.patientDtoToPatient(p));
+
+        return this.mapper.patientToPatientDO(patient);
+
+    }
+
     public Patient updateOnePatient(long id, Patient p) {
 
         Patient patient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no se encuentra" + id));
+
         patient.setFullName(p.getFullName());
         patient.setDocument(p.getDocument());
         patient.setAge(p.getAge());
         patient.setGender(p.getGender());
+
         return this.patientRepository.save(patient);
     }
+
     public void deleteOnePatient(long id) {
         Patient patient = patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Paciente no se encuentra" + id));
-         this.patientRepository.delete(patient);
-
-    }
-    public Patient getPatientByFullName(String fullName) {
-        log.info("aqui estamos en el service getPatientByFullName!!");
-        return this.patientRepository.findByDocument(fullName);
-
-    }
-    public void logUserSession(String username) {
-        // guarda un registro de que este usuario
-        System.out.println("Usuario " + username + " ha accedido a la sesión.");
-        // interactuar con una base de datos para registrar la actividad
+         this.patientRepository.deleteById(id);
     }
 
-    public String getWelcomeMessage(String username) {
-        logUserSession(username); // Llamas al método de registro aquí
-        return "Bienvenido: " + username;
+
+    public List<Patient> getPatientFilterByFullName(String nombre) {
+        List<Patient> lstPatients = this.patientRepository.buscarPorNombre(nombre);
+        log.info("Total en lista {}", lstPatients.stream().count());
+        return lstPatients;
     }
+
+
 
 
 

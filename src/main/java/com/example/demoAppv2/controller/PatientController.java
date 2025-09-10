@@ -1,6 +1,8 @@
 package com.example.demoAppv2.controller;
+import com.example.demoAppv2.dto.PatientDTO;
 import com.example.demoAppv2.repository.Patient;
 import com.github.javafaker.Faker;
+import org.aspectj.weaver.patterns.IToken;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demoAppv2.service.PatientService;
@@ -96,38 +98,50 @@ public class PatientController {
 
     @PostMapping
     public Patient create (@RequestBody Patient p) {
-
-
         return this.patientService.saveOnePatienv2(p);
     }
+
+
+    //mapstruct
+    @PostMapping("mapstruct")
+    public PatientDTO createv2 (@RequestBody PatientDTO p) {
+
+        return this.patientService.saveOnePatienv3(p);
+    }
+
+
     @PutMapping("/{id}")
     public Patient update (@PathVariable Long id,@RequestBody  Patient p) {
 
 
         return this.patientService.updateOnePatient(id,p);
     }
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         this.patientService.deleteOnePatient(id);
     }
-    @GetMapping("/buscarPorNombre")
-    public Patient getPatientByFullName(@RequestParam String nombre) {
-        return patientService.getPatientByFullName(nombre);
-    }
-    @GetMapping("/sesion")
-    public ResponseEntity<String> sesion(@CookieValue(name = "usuario", defaultValue = "invitado") String usuario) {
-        String mensaje = patientService.getWelcomeMessage(usuario);
-        return ResponseEntity.ok().body(mensaje);
 
+    @GetMapping("/cookie")
+    public String getOneCookie(@CookieValue(name = "user-token", defaultValue = "invitado") String token) {
+        log.info("El valor del cookie es { }", token);
+        return "El valor del cookue es  " + token;
+    }
+    @GetMapping("/multiHeader")
+    public String getMultiHeader(
+            @RequestHeader(value = "User-Agent",defaultValue = "es-Pa") String userAgent,
+            @RequestHeader(value = "Accept-language",defaultValue = "fr-default") String language)
+    {
+        log.info("El valor del User-Agent es { } y el valor del lenguaje { } ", userAgent, language);
+        return "El valor del cookie es  |" + userAgent + " language: " + language;
     }
 
-    @GetMapping("/setCookie")
-    public ResponseEntity<String> setCookie(@RequestParam String usuario) {
-        String mensaje = "Cookie 'usuario' establecida con el valor: " + usuario;
-        return ResponseEntity.ok()
-                .header("Set-Cookie", "usuario=" + usuario + "; Path=/; HttpOnly")
-                .body(mensaje);
+    //JPQL
+    @GetMapping("/filter")
+    public List<Patient> getFilterByFullName(@RequestParam("name") String name) {
+        log.info("El valor del Filter es { }", name);
+        return this.patientService.getPatientFilterByFullName(name);
     }
+
 
 
 
